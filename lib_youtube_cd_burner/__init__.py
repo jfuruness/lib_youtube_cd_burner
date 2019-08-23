@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""This package contains a parser and database to parse bgp data"""
+"""This package contains a cd burner to burn CDs"""
 
-from .cd_burner import CD_Burner
+from .playlist import Playlist, Youtube_Playlist
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]

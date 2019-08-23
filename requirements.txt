@@ -1,0 +1,5 @@
+setuptools>=40.8.0
+pydub>=0.23.1
+soundfile>=0.10.2
+youtube_dl>=2019.8.13
+numpy

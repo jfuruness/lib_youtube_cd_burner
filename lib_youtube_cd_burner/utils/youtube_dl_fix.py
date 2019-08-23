@@ -1,21 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""This module contains class Playlist and Youtube Playlist
+"""This module contains class Youtube_dl_fix
 
-Playlist can download songs, format them, and generate cds from them,
-and burn cds
+This class inherits from yotube dl and fixes a method that causes
+everything to crash if ffmpeg cannot convert a song, instead of just
+skipping it. I wrote this a while ago before I knew to write good docs
+and before I knew properly about inheritance, so idk where the change
+is, but it's in there. You could probably diff these funcs with youtube
+dl's to find it but idc
+
+Design Choices:
+-Youtube dl uses ffmpeg to convert files, but this breaks on webm songs
+    -Encountered these when downloading russian songs
+    -Instead of breaking, we skip that song
+Possible Future Improvements:
+    -Figure out the changes I made and document them
+    -Now that I know inheritance, go back and take out unnessecary funcs
 """
 
-from random import shuffle
 import itertools
-from .song import Song
-from .cd import CD
 import os
-import moviepy.editor as mp
-from pydub import AudioSegment
+import json
+import random
 import youtube_dl
-from .logger import error_catcher
+from youtube_dl.utils import encodeFilename, PostProcessingError, orderedSet
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]
@@ -24,6 +33,7 @@ __Version__ = "0.1.0"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
 __status__ = "Development"
+
 
 class Youtube_dl_fix(youtube_dl.YoutubeDL):
 
@@ -48,11 +58,14 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
                     self.report_error(e.msg)
                 if files_to_delete and not self.params.get('keepvideo', False):
                     for old_filename in files_to_delete:
-                        self.to_screen('Deleting original file %s (pass -k to keep)' % old_filename)
+                        self.to_screen(
+                            'Deleting original file %s (pass -k to keep)'
+                            % old_filename)
                         try:
                             os.remove(encodeFilename(old_filename))
                         except (IOError, OSError):
-                            self.report_warning('Unable to remove downloaded original file')
+                            self.report_warning(
+                                'Unable to remove downloaded original file')
         except BaseException:
             print("Problem postprocessing")
 
@@ -98,7 +111,8 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
 
             force_properties = dict(
                 (k, v) for k, v in ie_result.items() if v is not None)
-            for f in ('_type', 'url', 'id', 'extractor', 'extractor_key', 'ie_key'):
+            for f in ('_type', 'url', 'id', 'extractor',
+                      'extractor_key', 'ie_key'):
                 if f in force_properties:
                     del force_properties[f]
             new_result = info.copy()
@@ -139,7 +153,8 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
                                 yield int(item)
                         else:
                             yield int(string_segment)
-                playlistitems = orderedSet(iter_playlistitems(playlistitems_str))
+                playlistitems = orderedSet(iter_playlistitems(
+                    playlistitems_str))
 
             ie_entries = ie_result['entries']
 
@@ -161,9 +176,13 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
                 else:
                     entries = ie_entries[playliststart:playlistend]
                 n_entries = len(entries)
-                self.to_screen(
-                    '[%s] playlist %s: Collected %d video ids (downloading %d of them)' %
-                    (ie_result['extractor'], playlist, n_all_entries, n_entries))
+                _str_1 = '[%s] playlist %s: Collected %d '
+                _str_1 += 'video ids (downloading %d of them)'
+                self.to_screen(_str_1 %
+                               (ie_result['extractor'],
+                                playlist,
+                                n_all_entries,
+                                n_entries))
             elif isinstance(ie_entries, youtube_dl.utils.PagedList):
                 if playlistitems:
                     entries = []
@@ -195,7 +214,8 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
             x_forwarded_for = ie_result.get('__x_forwarded_for_ip')
 
             for i, entry in enumerate(entries, 1):
-                self.to_screen('[download] Downloading video %s of %s' % (i, n_entries))
+                self.to_screen(
+                    '[download] Downloading video %s of %s' % (i, n_entries))
                 # This __x_forwarded_for_ip thing is a bit ugly but requires
                 # minimal changes
                 if x_forwarded_for:
@@ -210,7 +230,8 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
                     'playlist_index': i + playliststart,
                     'extractor': ie_result['extractor'],
                     'webpage_url': ie_result['webpage_url'],
-                    'webpage_url_basename': youtube_dl.utils.url_basename(ie_result['webpage_url']),
+                    'webpage_url_basename': youtube_dl.utils.url_basename(
+                        ie_result['webpage_url']),
                     'extractor_key': ie_result['extractor_key'],
                 }
 
@@ -229,7 +250,8 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
                     print("Problem occured downloading a file: {}".format(e))
                     continue
             ie_result['entries'] = playlist_results
-            self.to_screen('[download] Finished downloading playlist: %s' % playlist)
+            self.to_screen('[download] Finished downloading playlist: %s'
+                           % playlist)
             return ie_result
         elif result_type == 'compat_list':
             self.report_warning(
@@ -242,7 +264,8 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
                     {
                         'extractor': ie_result['extractor'],
                         'webpage_url': ie_result['webpage_url'],
-                        'webpage_url_basename': youtube_dl.utils.url_basename(ie_result['webpage_url']),
+                        'webpage_url_basename': youtube_dl.utils.url_basename(
+                            ie_result['webpage_url']),
                         'extractor_key': ie_result['extractor_key'],
                     }
                 )
@@ -254,154 +277,3 @@ class Youtube_dl_fix(youtube_dl.YoutubeDL):
             return ie_result
         else:
             raise Exception('Invalid result type: %s' % result_type)
-
-
-class MyLogger(object):
-    def debug(self, msg):
-        print(msg)
-
-    def warning(self, msg):
-        print(msg)
-
-    def error(self, msg):
-        print(msg)
-
-
-class Playlist:
-    """Playlist class that allows for download and manipulation of songs
-
-    The playlist class can download songs, generate songs from downloads,
-    format songs, generate cds, burn cds, and self destruct to remove files
-    """
-
-#    __slots__ = ['logger']
-
-    @error_catcher()
-    def __init__(self, url, logger, path="/tmp/lib_cd_burner_songs"):
-        """initializes playlist and directories"""
-
-        self.path = path
-        if not os.path.exists(self.path):
-            os.makedirs(self.path)
-        self.songs = []
-        self.cds = []
-        self.url = url
-        self.logger = logger
-
-    @error_catcher()
-    def download_songs(self):
-        """Method to be inherited, should download and generate songs"""
-
-        pass
-
-    @error_catcher()
-    def format_songs(self, add_gap, remove_silence):
-        """Formats all songs for the cd to be burned
-
-        Formats all songs in cd ro be burned. The add gap is to add a three
-        second gap at the end if value is three. remove_silence removes the
-        silence at the ends of songs before adding the add_gap value.
-        remove_silence takes a long time to process, so be default it is false
-        """
-
-        for song in self.songs:
-            song.format_song(add_gap, remove_silence)
-
-    @error_catcher()
-    def generate_cds(self,
-                     cd_capacity=60*79+59,
-                     add_gap=3,
-                     remove_silence=False,
-                     randomize=False):
-        """Takes a playlist and generates cds from it.
-
-        Takes a playlist and generates cds from it. add_gap is the gap in
-        seconds between songs. remove_silence can remove the silence before
-        adding the gap between songs. randomize is that the songs are
-        downloaded in order as they are in the playlist. cd_capacity is the
-        amount of seconds that can go on a cd"""
-
-
-        # Format songs for burn, must do this now to add the three second gap
-        self.format_songs(add_gap, remove_silence)
-        # Randomizes songs if needed
-        if randomize:
-            shuffle(self.songs)
-        cd_not_full = False
-        # If the song is added and the cd is too long, it will not add the song
-        # And a new cd will be created
-        for song in self.songs:
-            # If the cd is full, then create a new one
-            if not cd_not_full:
-                self.cds.append(CD(cd_capacity, self.logger))
-            # Add the song to the cd
-            cd_not_full = self.cds[-1].add_track(song)
-
-    @error_catcher()
-    def burn_cds(self, normalize_audio=True):
-        """Burns all cds, if normalize_audio, the cds are normalized volume"""
-
-        for cd in self.cds:
-            # Normalizing the audio makes it so that the audio doesn't spike
-            # if songs are recoreded at different volumes when switching songs
-            if normalize_audio:
-                cd.normalize_audio()
-            cd.burn()
-
-    @error_catcher()
-    def clean_up(self):
-        """Deletes path"""
-
-        if os.path.exists(self.path):
-            # rm -rf path
-            shutil.rmtree(self.path)            
-
-class Youtube_Playlist(Playlist):
-    """inits a youtube playlist instance"""
-
-#    __slots__ = []
-
-    @error_catcher()
-    def __init__(self, url, logger, path="/tmp/lib_cd_burner_songs"):
-        """inherits playlist instance"""
-
-        Playlist.__init__(self, url, logger, path)
-
-    @error_catcher()
-    def download_songs(self):
-        """Downloads songs and adds to self.songs"""
-
-        # Options for the downloader
-        ydl_opts = {
-            'ignoreerrors': True,
-            'age_limit': 25,
-            'retries': 3,
-            'format': 'bestaudio[asr=44100]/best',
-            'outtmpl': self.path + '/%(playlist_index)s- %(title)s.%(ext)s',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'wav',
-                'preferredquality': '192',
-            }],
-            'logger': MyLogger(),
-            'progress_hooks': [self.my_hook]
-        }
-        try:
-            # Download songs
-            with Youtube_dl_fix(ydl_opts) as ydl:
-                ydl.download([self.url])
-            #with SimpleFileDownloader(params=ydl_opts) as ydl:
-            #    ydl.extract_info([self.url])
-            #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        except:
-            print("Looks like a video download failed. Probably a webm file extension")
-        print("why aren't you working")
-
-    @error_catcher()
-    def my_hook(self, d):
-        """What happens when a song is downloaded"""
-
-        name = d['filename'].rsplit('.', 1)[0]
-        if d['status'] == 'finished':
-            self.logger.info('Done downloading {}'.format(name))
-            self.songs.append(Song(d['filename'], name, self.logger)) #"d['filename']"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""This module contains class Song 
+"""This module contains class Song
 
 The song class formats the song to be used in an audio CD. The
 formatting is neccessary or else the song will not play on a CD. This is
@@ -66,10 +66,9 @@ Possible Future Improvements:
     -three seconds of silence should be customizable
 """
 
-import os
 import soundfile as sf
 from pydub import AudioSegment, silence
-from .logger import Logger, error_catcher
+from .utils import Logger, error_catcher
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]
@@ -80,7 +79,7 @@ __email__ = "jfuruness@gmail.com"
 __status__ = "Development"
 
 
-class Song(Logger):
+class Song:
     """This class contains information about a song.
 
     This class can format a song and change its decible level.
@@ -100,9 +99,9 @@ class Song(Logger):
         # The logger
         self.logger = logger
         # Put this here so as not to pass around strings
-        self.extension = "wav"
+        self.extension = path.split(".")[-1]
         # The meta data, for ex seconds
-        self.generate_meta_data(path)
+        self._generate_meta_data()
         self.logger.debug("Initialized Song with path {}".format(path))
 
     def __str__(self):
@@ -124,38 +123,44 @@ class Song(Logger):
         self.logger.debug("Formatting {}".format(self.path))
         # Formats the audio segment to WAV, 44100Hz, and bidrectional
         self._format_audio_segment()
-        # Formats the file to be PCM_16
-        self._convert_to_pcm_16() 
 
         # Changes the audio to pcm_16, neccessary for CD's
         data, sample_rate = sf.read(self.path)
         sf.write(self.path, data, sample_rate, subtype='PCM_16')
+
+        self._generate_meta_data(audio_segment=True)
         # Removes silence from the end of the playlist if called
         # Default is fale because it takes a long time
-
         if remove_silence:
             self.remove_silence()
         # Adds three seconds to the end of the audio segment
-        self.audio_segment += AudioSegment.silent(duration=3000)  #3 seconds of silence
+        self.audio_segment += AudioSegment.silent(duration=3000)
         self.audio_segment.export(self.path, format=self.extension)
         # Regenerates meta data and gets rid of the audio segment
-        self.generate_meta_data()
+        self._generate_meta_data()
 
     # https://stackoverflow.com/a/42496373
     @error_catcher()
     def match_target_amplitude(self, target_dBFS):
-        self._generate_meta_data(self.path)
+        """Matches target amplitude.
+
+        Used for when songs are different volumes back to back.
+        """
+
+        self._generate_meta_data(self.path, audio_segment=True)
         change_in_dBFS = target_dBFS - self.audio_segment.dBFS
         self.audio_segment = self.audio_segment.apply_gain(change_in_dBFS)
         self.audio_segment.export(self.path, format=self.extension)
-        self.generate_meta_data(self.path)
+        self._generate_meta_data(self.path)
 
 ########################
 ### Helper Functions ###
 ########################
 
     @error_catcher()
-    def _format_audio_segment():
+    def _format_audio_segment(self):
+        """Changed to WAV, 44100Hz, bidirectional."""
+
         # Done so that the audio segment gets generated
         self._generate_meta_data(audio_segment=True)
         # Gets the new path for a WAV formatted song for audio CD
@@ -169,19 +174,26 @@ class Song(Logger):
         self._generate_meta_data(path=new_path)
 
     @error_catcher()
-    def _format
-    @error_catcher()
     def _remove_silence(self):
-        start, stop = silence.detect_silence(self.audio_segment, min_silence_len=1000, silence_thresh=-30)[-1]
+        """Removes the silence from the end of the song."""
+
+        # Gets the last bit of silence that's at least one sec
+        start, stop = silence.detect_silence(self.audio_segment,
+                                             min_silence_len=1000,
+                                             silence_thresh=-30)[-1]
+        # If the stop is the same as the end of the song
         if stop == self.milliseconds:
+            # Remove the last part of the song
             self.audio_segment = self.audio_segment[:start]
             self.audio_segment.export(self.path, format=self.extension)
             self.generate_meta_data(self.path)
 
     @error_catcher()
     def _generate_meta_data(self, path=None, audio_segment=False):
+        """Generates path, seconds, volume and audio segment."""
+
         self.path = path if path else self.path
-        self.audio_segment = AudioSegment.from_file(path, self.extension)
+        self.audio_segment = AudioSegment.from_file(self.path, self.extension)
         self.milliseconds = len(self.audio_segment)
         self.seconds = self.milliseconds/1000
         self.volume = self.audio_segment.dBFS
@@ -189,3 +201,6 @@ class Song(Logger):
         if not audio_segment:
             # Gets rid of the massive amount of ram this consumes
             self.audio_segment = None
+        self.extension = "wav"
+        self.path = "{}.wav".format(self.path.rsplit('.', 1)[0])
+
