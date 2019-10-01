@@ -23,6 +23,8 @@ import subprocess
 import time
 import fcntl
 import os
+from enum import Enum
+from contextlib import contextmanager
 from .utils import error_catcher
 
 __author__ = "Justin Furuness"
@@ -33,6 +35,12 @@ __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
 __status__ = "Development"
 
+
+class Disk_Values(Enum):
+    NO_DISK = 1
+    OPEN = 2
+    READING = 3
+    DISK_IN_TRAY = 4
 
 class CD:
     """CD class that adds songs and burns cds"""
@@ -61,48 +69,32 @@ class CD:
         else:
             return False
 
-    @error_catcher()
-    def normalize_audio(self):
-        """Makes audio not spike between switching songs"""
-
-        # Average Volume
-        avg_dbfs = sum([x.volume for x in self.songs])/len(self.songs)
-        for song in self.songs:
-            song.match_target_amplitude(avg_dbfs)
-
     def burn(self, times_to_burn=1):
         """Burns a cd times_to_burn times"""
 
         for i in range(times_to_burn):
             # Wait for disk insertion
-            self._get_disk()
-            # Wait for CD to mount
-            self._wait_for_cd_to_mount()
-            # args for bash command
-            args = ["sudo",
-                    "wodim",
-                    "-v",
-                    "dev=/dev/sr0",
-                    "-dao",  # sao????? same in wodim????
-                    "-audio",
-                    "-pad",
-                    "speed=8"  # for my cd player 10 is lowest
-                    ]
-            # Adds all the songs to burn in order
-            args.extend([x.path for x in self.songs])
-            # Actually burns the cd
-            output = subprocess.run(args)
-            self.logger.debug(output)
-            self.logger.info("Just burned {}".format(self))
-            # Pops the new cd out
-            subprocess.run(["eject"])
-
-    def _wait_for_cd_to_mount(self, seconds_to_wait=10):
-        """Waits seconds to wait to mount cd."""
-
-        for i in range(seconds_to_wait):
-            self.logger.debug("burning cd in {}".format(seconds_to_wait - i))
-            time.sleep(i)
+            if self._get_disk():
+                # args for bash command
+                args = ["sudo",
+                        "wodim",
+                        "-v",
+                        "dev=/dev/sr0",
+                        "-dao",  # sao????? same in wodim????
+                        "-audio",
+                        "-pad",
+                        "speed=8"  # for my cd player 10 is lowest
+                        ]
+                # Adds all the songs to burn in order
+                args.extend([x.path for x in self.songs])
+                # Actually burns the cd
+                output = subprocess.run(args)
+                self.logger.debug(output)
+                self.logger.info("Just burned {}".format(self))
+                # Pops the new cd out
+                subprocess.run(["eject"])
+            else:
+                self.logger.warning("Disk not inserted, exiting")
 
     def _get_disk(self):
         """Waits for disk insertion"""
@@ -110,16 +102,32 @@ class CD:
         # Pops out cd
         subprocess.run(["eject"])
         self.logger.info("Insert cd!")
-        # 1 for no disk, 2 for open, 3 for reading, 4 for disk in tray
-        rv = 2
-        # While cd drive is open
-        while rv == 2:
-            # https://superuser.com/a/1367091
-            # Gets CD
-            fd = os.open('/dev/sr0', os.O_RDONLY | os.O_NONBLOCK)
-            rv = fcntl.ioctl(fd, 0x5326)
-            os.close(fd)
+
+        while self._get_disk_val() == Disk_Values.OPEN.value:
+            self.logger.debug("Disk tray open")
             time.sleep(1)
+        while self._get_disk_val() == Disk_Values.READING.value:
+            self.logger.debug("Reading in disk")
+            time.sleep(1)
+        if self._get_disk_val() == Disk_Values.NO_DISK.value:
+            self.logger.warning("No disk inserted")
+            return False
+        elif self._get_disk_val() == Disk_Values.DISK_IN_TRAY.value:
+            self.logger.debug("Disk in tray and read")
+            return True
+
+    def _get_disk_val(self):
+
+        # https://superuser.com/a/1367091
+        # 1 for no disk, 2 for open, 3 for reading, 4 for disk in tray
+        with self._open_disk_fd() as fd:
+            return fcntl.ioctl(fd, 0x5326)
+
+    @contextmanager
+    def _open_disk_fd(self):
+        fd = os.open('/dev/sr0', os.O_RDONLY | os.O_NONBLOCK)
+        yield fd
+        os.close(fd)
 
     def __str__(self):
         """For when cd's are printed"""

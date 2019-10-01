@@ -1,48 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""This module contains a main function for cmd line args.
+"""This module contains the flask app for the url"""
 
-Design Choices:
--Sudo must be used to make sure user can download properly
-Possible Future Improvements:
-
-"""
-
-import os
-import subprocess
-import sys
-from argparse import ArgumentParser
-from .utils import Logger
-from .playlist import Youtube_Playlist
+from .flask_app import app
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]
 __Lisence__ = "MIT"
-__Version__ = "0.1.0"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
 __status__ = "Development"
 
+def main():
+    app.run(debug=True)
 
-# https://stackoverflow.com/a/20153881
-def upgrade_to_sudo(logger):
-    """Upgrades to sudo permissions"""
-
-    ret = 0
-    if os.geteuid() != 0:
-        msg = "[sudo] password for %u:"
-        ret = subprocess.check_call("sudo -v -p '%s'" % msg, shell=True)
-        # https://gist.github.com/davejamesmiller/1965559
-        os.execvp("sudo", ["sudo"] + ["python3"] + sys.argv)
-    if ret != 0:
-        logger.warning("User is not a sudo user. Goodbye.")
-        sys.exit(1)
-
-
-def main(url="https://www.youtube.com/watch?v=BahtnT13vH8", logger_args={}):
-    logger = Logger(logger_args).logger
-    parser = ArgumentParser(description='CD Burner')
-    parser.add_argument('-url', action="store", dest="url", default=url)
-    upgrade_to_sudo(logger)
-    Youtube_Playlist(url, logger).generate_cds()
+if __name__ == "__main__":
+    main()

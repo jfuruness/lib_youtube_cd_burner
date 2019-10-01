@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.csrf_token }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">URL</legend>
+                <div class="form-group">
+                    {{ form.url.label(class="form-control-label") }}
+                    {% if form.url.errors %}
+                        {{ form.url(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.url.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.url(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Save Path</legend>
+                <div class="form-group">
+                    {{ form.save_path.label(class="form-control-label") }}
+                    {% if form.save_path.errors %}
+                        {{ form.save_path(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.save_path.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.save_path(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

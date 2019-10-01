@@ -1,6 +1,150 @@
-This is version 1.0.
+# lib\_youtube\_cd\_burner
+This package contains the functionality to burn a CD with just a playlist (or video) URL. It also contains a flask website for ease of use. 
 
-There are other versions in development that deal with playlists over max length and stuff like that
-but this one just downloads a playlist, formats it, adds three seconds between songs, and burns a cd
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
+* [Description](#package-description)
+* [Usage](#forecast-usage)
+* * [Design Choices](#forecast-design-choices)
+* [Possible Future Improvements](#forecast-possible-future-improvements)
+* [Installation](#installation)
+* [Testing](#testing)
+* [Development/Contributing](#developmentcontributing)
+* [History](#history)
+* [Credits](#credits)
+* [Licence](#licence)
+* [Todo and Possible Future Improvements](#todopossible-future-improvements)
+* [FAQ](#faq)
+## Package Description
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
+This package downloads a youtube playlist and burns a CD (or saves to a file) with the songs contained in that playlist. This is done through a series of steps.
 
-if the playlist is too long it will error.
+1. If the flask app is open, the url is passed into the flask app. It is not validated because you are only supposed to be running this on your own machine, so just don't do anything stupid.
+2. This URL is passed into Youtube_Playlist object. This object saves the URL.
+3. Then, the Youtube_Playlist objects generate_cds function is called. This is the function that will do all the heavy lifting for CD burning
+4. The songs from the playlist are downloaded using youtube_dl. A fix has been made to youtube_dl. Normally it errors for songs of a certain format, some weird format used for Russian songs (which of course people want to use this to download). We do not want it to error out, and instead simply skip those songs.  CD length is customizable, as well as intervals inbetween the songs on the CD. However, these are by default set to 80 minutes and 3 seconds, respectively.
+5. The songs are downloaded into a fresh directory (that will be deleted once the parser is done. With each download, the song is formatted. Songs need to be formatted in a very particular manner in order for them to be able to be burned on an audio CD. They need to be WAV, 44100HZ, bidirectional (two channels), and PCM16. In addition, three seconds are added to each song. The functionality exists to remove all silence at the end of songs (in case there is already silence at the end) but this function takes a long time and is not turned on by default. You can find this function in song.py, however, it is not a part of a normal run because I wanted to get this project done and running.
+6. Then these songs are added to a CD class. If the save path option is entered, then this step is skipped, and the audio is normalized and copied to the new path. If there are too many songs, then more than one CD is created. Randomization is possible, but turned off by default, since I wanted to minimize features to get this running.
+7. After adding all songs to the CD, the CD audio is normalized. This is a process where songs volumes are increased or decreased so that from one song to the next the volume doesn't jump up and down.
+8. After this the disk is ejected. It waits until a user inputs a disk. If no disk is input but the disk reader is closed, then the function returns nothing. 
+9. After the disk is inserted, the program calls a bash script that uses wodim to burn the CD. The burn is as slow as is allowed to have a more even burn for when playing on crappy car sterios (for which this application was designed).
+
+### Usage
+* [lib\_bgp\_data](#lib_bgp_data)
+#### In a Script
+Initializing the Main module:
+
+
+| Parameter    | Default                             | Description                                                                                                       |
+|--------------|-------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| url         | some test url     | The url for the playlist that will be downloaded |
+| stream_level | ```logging.INFO```                        | Logging level for printing                                                                                        |
+| save_path | None                        | Path to save songs to if not burning CD                                                                                        |
+> Note that any one of the above attributes can be changed or all of them can be changed in any combination
+> Also note that there are many more logging arguments, and different inputs to the youtube_cd burner and each one of it's functions. However, in order to get this module up and running we are not including every potential parameter, because I probably will be the only one that ever uses this application so documenting them would be a waste of time. If you cannot figure it out from the well documented code feel free to contact me at jfuruness@gmail.com with the subject header including the package name.
+
+To run from a script with just the default CD burner:
+```python
+from lib_youtube_cd_burner import main, app
+main(url=<insert url here>)
+```
+To run with custom logging level:
+```python
+from logging import DEBUG
+from lib_youtube_cd_burner import main, app
+main(url=<insert url here>, logger_args={"stream_level": DEBUG})
+```
+To run and instead of burning save all songs to a path:
+```python
+from logging import DEBUG
+from lib_youtube_cd_burner import main, app
+main(url=<insert url here>, save_path=<insert_path_here>)
+```
+
+Again, you can create the youtube_playlist class to be able to have much more granularity with it and be able to paramatize functions for more features, but I won't ever do that, so if someone wants to modify this please contact me at jfuruness@gmail.com and I can write more documentation, I just don't want to waste my effort on it.
+
+To run the app 
+(NOTE: because you are running this on your host machine, it is not secure. We run this with the debugger because it is not deployed anywhere. Do NOT deploy flask in this way. Also, the flask app is just for usability, it does not add any functionality.)
+```python
+from lib_youtube_cd_burner import app
+app.run(debug=True)
+```
+
+#### From the Command Line
+
+run in a terminal: ```youtube_cd_burner```
+
+### Installation instructions
+* [lib\_bgp\_data](#lib_bgp_data)
+
+
+### System Requirements
+* [lib\_bgp\_data](#lib_bgp_data)
+
+## Testing
+   * [lib\_bgp\_data](#lib_bgp_data)
+
+Run tests on install by doing:
+```pip3 install lib_bgp_data --force --install-option test```
+This will install the package, force the command line arguments to be installed, and run the tests
+NOTE: You might need sudo to install command line arguments when doing this
+
+You can test the package if in development by moving/cd into the directory where setup.py is located and running:
+```python3 setup.py test```
+
+To test a specific submodule, cd into that submodule and run:
+```pytest```
+
+Note: I currently have not written any tests, since I have tried the CD's and know that it works. Idk if it's worth it to write since this package is complete so I'll put it off for now
+
+
+## Development/Contributing
+   * [lib\_bgp\_data](#lib_bgp_data)
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request
+6. Email me at jfuruness@gmail.com because idk how to even check those messages
+
+## History
+   * [lib\_bgp\_data](#lib_bgp_data)
+   * 0.1.0 - Burns CDs with flask app, minimal features
+
+## Credits
+   * [lib\_bgp\_data](#lib_bgp_data)
+
+There where various sites I visited to learn about audio CD's, unfortunately I did not record them as I did them because I didn't plan on making a package. Here are two posts that helped:
+
+https://stackoverflow.com/a/42496373
+https://superuser.com/a/1367091
+
+And of course this would not have been possible without youtube_dl and wodim, two very useful packages.
+
+Also, Corey Schafer on youtube had a tutorial on making a flask application that I used.
+
+## License
+   * [lib\_bgp\_data](#lib_bgp_data)
+
+MIT License
+
+## TODO/Possible Future Improvements
+   * [lib\_bgp\_data](#lib_bgp_data)
+
+        * Youtube_dl is slow, use a custom downloader to be faster
+        * multiprocess?
+        * Make better tests
+        * Make it so that it checks if the path will run out of memory
+        * add extra features to the docs such as remove silence, allow user to set burn speed, etc.
+            * Again, prob won't do this, because it'll just be me using it
+
+## FAQ
+   * [lib\_bgp\_data](#lib_bgp_data)
+
+Q: Why does downloading the songs take a while??
+
+A: It's the downloading from Youtube. Youtube updates their site constantly to prevent this sort of thing. There are custom down loaders to get around this, but it's fast enough and I don't care.
+
+Q: Why does the CD not burn fast?
+
+A: Because the CD does not burn well if it burns fast and this is designed for people with old crappy stereos that do not have good error correction

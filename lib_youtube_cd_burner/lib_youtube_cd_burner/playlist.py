@@ -35,10 +35,10 @@ Possible Future Improvements:
 import os
 from random import shuffle
 from youtube_dl import YoutubeDL
-from shutil import rmtree
+from shutil import rmtree, copytree
 from .song import Song
 from .cd import CD
-from .utils import Youtube_dl_fix, Logger, error_catcher
+from .utils import Youtube_dl_fix, Logger, error_catcher, utils
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]
@@ -70,7 +70,7 @@ class Playlist:
     """
 
     @error_catcher()
-    def __init__(self, url, logger=Logger(), path="/tmp/lib_cd_burner_songs"):
+    def __init__(self, url, logger=Logger().logger, path="/tmp/lib_cd_burner_songs"):
         """initializes playlist and directories"""
 
         self.path = path
@@ -85,7 +85,8 @@ class Playlist:
     def generate_cds(self,
                      cd_capacity=60*79+59,
                      remove_silence=False,
-                     randomize=False):
+                     randomize=False,
+                     save_path=None):  # If path is none CD gets burned
         """Takes a playlist and generates cds from it.
 
         Takes a playlist and generates cds from it. remove_silence
@@ -99,17 +100,22 @@ class Playlist:
         # Randomizes songs if needed
         if randomize:
             shuffle(self.songs)
-        room_left = False
-        # If the song is added and the cd is too long, it will not add the song
-        # And a new cd will be created
-        for song in self.songs:
-            # If the cd is full, then create a new one
-            if not room_left:
-                self.cds.append(CD(cd_capacity, self.logger))
-                room_left = True
-            # Add the song to the cd
-            room_left = self.cds[-1].add_track(song)
-        self.burn_cds()
+        if save_path is None:
+            room_left = False
+            # If the song is added and the cd is too long, it will not add the song
+            # And a new cd will be created
+            for song in self.songs:
+                # If the cd is full, then create a new one
+                if not room_left:
+                    self.cds.append(CD(cd_capacity, self.logger))
+                    room_left = True
+                # Add the song to the cd
+                room_left = self.cds[-1].add_track(song)
+            self.burn_cds()
+        else:
+            utils.normalize_audio(self)
+            if not os.path.exists(save_path):
+                copytree(self.path, save_path)
         self.clean_up()
 
     @error_catcher()
@@ -132,7 +138,7 @@ class Playlist:
             # Normalizing the audio makes it so that the audio doesn't spike
             # if songs are recoreded at different volumes when switching songs
             if normalize_audio:
-                cd.normalize_audio()
+                utils.normalize_audio(cd)
             cd.burn()
 
     @error_catcher()

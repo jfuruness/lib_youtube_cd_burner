@@ -3,8 +3,8 @@
 
 """This package contains a cd burner to burn CDs"""
 
-from .lib_youtube_cd_burner import Playlist, Youtube_Playlist, main
-from .flask_app import app
+from .playlist import Playlist, Youtube_Playlist
+from .__main__ import main
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]

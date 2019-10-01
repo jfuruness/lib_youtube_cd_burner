@@ -3,6 +3,7 @@
 
 """This package contains a logger and youtube dl fix"""
 
+from . import utils
 from .logger import Logger, error_catcher
 from .youtube_dl_fix import Youtube_dl_fix
 

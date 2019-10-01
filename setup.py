@@ -3,23 +3,21 @@ from setuptools import setup, find_packages
 setup(
     name='lib_youtube_cd_burner',
     packages=find_packages(),
-    version='0.1.00',
+    version='0.1.0',
     author='Justin Furuness',
     author_email='jfuruness@gmail.com',
     url='https://github.com/jfuruness/lib_youtube_cd_burner.git',
     download_url='https://github.com/jfuruness/lib_youtube_cd_burner.git',
     keywords=['Furuness', 'cd', 'burner', 'youtube', 'audio', 'audio cd'],
-    test_suite='nose.collector',
-    tests_require=['nose'],
     install_requires=[
         'setuptools',
-        'pydub',
-        'soundfile',
-        'youtube_dl',
-        'setuptools',
-        'psycopg2',
-        'requests',
-        'numpy'
+        'setuptools>=40.8.0'
+        'youtube_dl>=2019.1.17'
+        'Flask>=1.1.1'
+        'WTForms>=2.2.1'
+        'Flask_WTF>=0.14.2'
+        'pydub>=0.23.1'
+        'soundfile>=0.10.2'
     ],
     classifiers=[
         'Environment :: Console',
@@ -30,7 +28,8 @@ setup(
         'Programming Language :: Python :: 3'],
     entry_points={
         'console_scripts': [
-            'burn_a_cd = lib_youtube_cd_burner.__main__:main'
+            'youtube_cd_burner = lib_youtube_cd_burner.__main__:main'
         ]},
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
 )
-
