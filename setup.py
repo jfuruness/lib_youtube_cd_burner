@@ -14,6 +14,7 @@ setup(
         'setuptools>=40.8.0'
         'youtube_dl>=2019.1.17'
         'Flask>=1.1.1'
+        'numpy'
         'WTForms>=2.2.1'
         'Flask_WTF>=0.14.2'
         'pydub>=0.23.1'

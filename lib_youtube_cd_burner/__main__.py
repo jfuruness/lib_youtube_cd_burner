@@ -13,7 +13,7 @@ __email__ = "jfuruness@gmail.com"
 __status__ = "Development"
 
 def main():
-    app.run(debug=True)
+    app.run(debug=False)
 
 if __name__ == "__main__":
     main()
