@@ -40,9 +40,10 @@ def upgrade_to_sudo(logger):
         sys.exit(1)
 
 
-def main(url, logger_args={}, save_path=None):
+def main(url, logger_args={}, save_path=None, song_format="wav"):
     logger = Logger(logger_args).logger
     parser = ArgumentParser(description='CD Burner')
     parser.add_argument('-url', action="store", dest="url", default=None)
     upgrade_to_sudo(logger)
-    Youtube_Playlist(url, logger).generate_cds(save_path=save_path)
+    Youtube_Playlist(url, logger).generate_cds(save_path=save_path,
+                                               song_format=song_format)

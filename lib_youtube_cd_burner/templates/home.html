@@ -35,6 +35,22 @@
                     {% endif %}
                 </div>
             </fieldset>
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Song Format</legend>
+                <div class="form-group">
+                    {{ form.song_format.label(class="form-control-label") }}
+                    {% if form.song_format.errors %}
+                        {{ form.song_format(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.song_format.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.ssong_format(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>

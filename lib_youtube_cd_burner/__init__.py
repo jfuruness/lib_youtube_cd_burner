@@ -28,6 +28,8 @@ class URLForm(FlaskForm):
     save_path_str = ("For a CD to burn, this must be empty! "
                      "save path ex: /home/anon/Desktop/songs")
     save_path = StringField(save_path_str)
+    song_format = StringField("Desired Song Format. For CDs, must be wav",
+                              default="wav")
     submit = SubmitField('Burn/Save')
 
 
@@ -55,7 +57,9 @@ def create_app(test_config=None):
             flash("Completed", "success")
             # Method call here to burn CDs!
             path = None if form.save_path.data == "" else form.save_path.data
-            main(form.url.data, save_path=path)
+            main(form.url.data,
+                 save_path=path,
+                 song_format=form.song_format.data.lower())
         return render_template('home.html', form=form)
 
     return app

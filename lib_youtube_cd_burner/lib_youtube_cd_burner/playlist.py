@@ -86,7 +86,8 @@ class Playlist:
                      cd_capacity=60*79+59,
                      remove_silence=False,
                      randomize=False,
-                     save_path=None):  # If path is none CD gets burned
+                     save_path=None,  # If path is none CD gets burned
+                     song_format="wav")
         """Takes a playlist and generates cds from it.
 
         Takes a playlist and generates cds from it. remove_silence
@@ -96,7 +97,7 @@ class Playlist:
 
         self.download_songs()
         # Format songs for burn, must do this now to add the three second gap
-        self.format_songs(remove_silence)
+        self.format_songs(remove_silence, song_format)
         # Randomizes songs if needed
         if randomize:
             shuffle(self.songs)
@@ -119,7 +120,7 @@ class Playlist:
         self.clean_up()
 
     @error_catcher()
-    def format_songs(self, remove_silence):
+    def format_songs(self, remove_silence, song_format):
         """Formats all songs for the cd to be burned
 
         Formats all songs in cd ro be burned. remove_silence removes the
@@ -128,7 +129,7 @@ class Playlist:
         """
 
         for song in self.songs:
-            song.format_song(remove_silence)
+            song.format_song(remove_silence, song_format)
 
     @error_catcher()
     def burn_cds(self, normalize_audio=True):

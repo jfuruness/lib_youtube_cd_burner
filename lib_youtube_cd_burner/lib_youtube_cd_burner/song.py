@@ -110,7 +110,7 @@ class Song:
         return self.name
 
     @error_catcher()
-    def format_song(self, remove_silence=False):
+    def format_song(self, remove_silence=False, song_format="wav"):
         """This function formats a song.
 
         The song is converted to WAV, 44100 Herz, and bidrectional. Then
@@ -158,13 +158,14 @@ class Song:
 ########################
 
     @error_catcher()
-    def _format_audio_segment(self):
+    def _format_audio_segment(self, song_format="wav"):
         """Changed to WAV, 44100Hz, bidirectional."""
 
         # Done so that the audio segment gets generated
         self._generate_meta_data(audio_segment=True)
         # Gets the new path for a WAV formatted song for audio CD
-        new_path = "{}.wav".format(self.path.rsplit('.', 1)[0])
+        new_path = "{}.{}".format(self.path.rsplit('.', 1)[0], song_format)
+        self.extension = song_format
         # Sets the Herz to 44100 for audio CD
         self.audio_segment = self.audio_segment.set_frame_rate(44100)
         # Makes bidrectional for audio CD
@@ -201,6 +202,4 @@ class Song:
         if not audio_segment:
             # Gets rid of the massive amount of ram this consumes
             self.audio_segment = None
-        self.extension = "wav"
-        self.path = "{}.wav".format(self.path.rsplit('.', 1)[0])
-
+        self.path = "{}.{}".format(self.path.rsplit('.', 1)[0], self.extension)
