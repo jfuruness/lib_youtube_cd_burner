@@ -4,7 +4,6 @@ This package contains the functionality to burn a CD with just a playlist (or vi
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 * [Description](#package-description)
 * [Usage](#forecast-usage)
-* * [Design Choices](#forecast-design-choices)
 * [Possible Future Improvements](#forecast-possible-future-improvements)
 * [Installation](#installation)
 * [Testing](#testing)
@@ -30,6 +29,9 @@ This package downloads a youtube playlist and burns a CD (or saves to a file) wi
 
 ### Usage
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
+
+NOTE: For this to run, wodim requires you to be a sudo user. All of these must be done with sudo. 
+
 #### In a Script
 Initializing the Main module:
 
@@ -60,6 +62,16 @@ from lib_youtube_cd_burner import main, app
 main(url=<insert url here>, save_path=<insert_path_here>)
 ```
 
+To run and instead of burning save all songs to a path and also make a different format:
+
+```python
+from logging import DEBUG
+from lib_youtube_cd_burner import main, app
+main(url=<insert url here>,
+     save_path=<insert_path_here>,
+     song_format="mp3")
+```
+
 Again, you can create the youtube_playlist class to be able to have much more granularity with it and be able to paramatize functions for more features, but I won't ever do that, so if someone wants to modify this please contact me at jfuruness@gmail.com and I can write more documentation, I just don't want to waste my effort on it.
 
 To run the app 
@@ -71,14 +83,35 @@ app.run(debug=True)
 
 #### From the Command Line
 
-run in a terminal: ```youtube_cd_burner```
+run in a terminal: ```sudo youtube_cd_burner```
+
+This will start the flask application
 
 ### Installation instructions
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
+First install wodim:
+```sudo apt-get install wodim```
+
+Then install the package with:
+```pip3 install lib_youtube_cd_burner --force```
+
+To install from source and develop:
+```
+git clone https://github.com/jfuruness/lib_youtube_cd_burner.git
+cd lib_youtube_cd_burner
+pip3 install wheel --upgrade
+pip3 install -r requirements.txt --upgrade
+python3 setup.py sdist bdist_wheel
+python3 setup.py install
+```
+
+NOTE: you cannot use develop arg because of the way flask works. You must reinstall for dev after every change. It sucks, I know, but flask really does not like being inside of a package.
 
 ### System Requirements
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
+
+Linux. It needs wodim, I don't know how to burn a CD on windows and I have asked and found no answers.
 
 ## Testing
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
@@ -110,6 +143,7 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
 ## History
    * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
    * 0.1.0 - Burns CDs with flask app, minimal features
+   * 0.1.1 - Burn CDs or save songs with custom format
 
 ## Credits
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
@@ -150,3 +184,7 @@ A: It's the downloading from Youtube. Youtube updates their site constantly to p
 Q: Why does the CD not burn fast?
 
 A: Because the CD does not burn well if it burns fast and this is designed for people with old crappy stereos that do not have good error correction
+
+Q: Why does the flask app have to be in the top directory?
+
+A: Because the flask naming scheme sucks, and it literally does not work in any way anywhere else no matter what I do. Or at least I should say, it cannot be dynamically installed and run anywhere if you do that.
