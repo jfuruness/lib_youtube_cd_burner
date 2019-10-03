@@ -22,7 +22,7 @@ __Lisence__ = "MIT"
 __Version__ = "0.1.0"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
-__status__ = "Development"
+__status__ = "Production"
 
 
 # https://stackoverflow.com/a/20153881

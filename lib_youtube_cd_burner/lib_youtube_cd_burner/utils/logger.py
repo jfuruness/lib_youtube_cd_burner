@@ -20,7 +20,7 @@ __credits__ = ["Justin Furuness"]
 __Lisence__ = "MIT"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
-__status__ = "Development"
+__status__ = "Production"
 
 
 # compiled regex global to prevent unnessecary recompilation

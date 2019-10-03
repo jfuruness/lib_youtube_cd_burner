@@ -33,7 +33,7 @@ __Lisence__ = "MIT"
 __Version__ = "0.1.0"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
-__status__ = "Development"
+__status__ = "Production"
 
 
 class Disk_Values(Enum):
@@ -41,6 +41,7 @@ class Disk_Values(Enum):
     OPEN = 2
     READING = 3
     DISK_IN_TRAY = 4
+
 
 class CD:
     """CD class that adds songs and burns cds"""

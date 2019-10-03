@@ -69,7 +69,7 @@ Possible Future Improvements:
 import os
 import soundfile as sf
 from pydub import AudioSegment, silence
-from .utils import Logger, error_catcher
+from .utils import error_catcher
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]
@@ -77,7 +77,7 @@ __Lisence__ = "MIT"
 __Version__ = "0.1.0"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
-__status__ = "Development"
+__status__ = "Production"
 
 
 class Song:
@@ -142,7 +142,6 @@ class Song:
         self._generate_meta_data()
         if self.path != self.og_path:
             os.remove(self.og_path)
-
 
     # https://stackoverflow.com/a/42496373
     @error_catcher()

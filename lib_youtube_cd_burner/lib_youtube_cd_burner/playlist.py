@@ -70,7 +70,10 @@ class Playlist:
     """
 
     @error_catcher()
-    def __init__(self, url, logger=Logger().logger, path="/tmp/lib_cd_burner_songs"):
+    def __init__(self,
+                 url,
+                 logger=Logger().logger,
+                 path="/tmp/lib_cd_burner_songs"):
         """initializes playlist and directories"""
 
         self.path = path
@@ -175,7 +178,7 @@ class Youtube_Playlist(Playlist):
         }
         try:
             # Download songs
-            with YoutubeDL(ydl_opts) as ydl:
+            with Youtube_dl_fix(ydl_opts) as ydl:
                 ydl.download([self.url])
         except Exception as e:
             self.logger.warning("Video download failed. Probably webm file")

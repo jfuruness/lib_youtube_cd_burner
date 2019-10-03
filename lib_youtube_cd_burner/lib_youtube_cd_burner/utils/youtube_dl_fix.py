@@ -32,7 +32,7 @@ __Lisence__ = "MIT"
 __Version__ = "0.1.0"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
-__status__ = "Development"
+__status__ = "Production"
 
 
 class Youtube_dl_fix(youtube_dl.YoutubeDL):

@@ -1,4 +1,3 @@
- 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -18,6 +17,7 @@ __Lisence__ = "MIT"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
 __status__ = "Production"
+
 
 class URLForm(FlaskForm):
     """URL Validator form for flask"""
@@ -47,7 +47,6 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
 
     @app.route("/", methods=['GET', 'POST'])
     @app.route("/home", methods=['GET', 'POST'])

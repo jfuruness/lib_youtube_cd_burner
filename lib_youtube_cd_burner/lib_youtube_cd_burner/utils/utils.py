@@ -3,19 +3,12 @@
 
 """This module contains useful functions"""
 
-import re
-import sys
-import datetime
-import os
-import functools
-import traceback
-
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]
 __Lisence__ = "MIT"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
-__status__ = "Development"
+__status__ = "Production"
 
 
 def normalize_audio(obj):
