@@ -1,0 +1,4 @@
+include LICENSE
+graft lib_youtube_cd_burner/static
+graft lib_youtube_cd_burner/templates
+global-exclude *.pyc

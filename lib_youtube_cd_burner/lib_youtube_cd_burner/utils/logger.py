@@ -136,7 +136,7 @@ class Logger:
 
         log_dir = args.get("log_dir")
         if log_dir is None:
-            log_dir = "/var/log/lib_bgp_data"
+            log_dir = "/var/log/lib_youtube_cd_burner"
         self._make_dir(log_dir)
 
         prepend = args.get("prepend")

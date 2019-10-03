@@ -1,19 +1,17 @@
+ 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""This module contains the flask app for the url"""
+"""This module creates the flask app to obtain urls"""
 
-from .flask_app import app
+from .__init__ import create_app
+
 
 __author__ = "Justin Furuness"
 __credits__ = ["Justin Furuness"]
 __Lisence__ = "MIT"
 __maintainer__ = "Justin Furuness"
 __email__ = "jfuruness@gmail.com"
-__status__ = "Development"
+__status__ = "Production"
 
-def main():
-    app.run(debug=False)
-
-if __name__ == "__main__":
-    main()
+create_app().run(debug=True)

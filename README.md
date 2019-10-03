@@ -29,7 +29,7 @@ This package downloads a youtube playlist and burns a CD (or saves to a file) wi
 9. After the disk is inserted, the program calls a bash script that uses wodim to burn the CD. The burn is as slow as is allowed to have a more even burn for when playing on crappy car sterios (for which this application was designed).
 
 ### Usage
-* [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 #### In a Script
 Initializing the Main module:
 
@@ -74,14 +74,14 @@ app.run(debug=True)
 run in a terminal: ```youtube_cd_burner```
 
 ### Installation instructions
-* [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 
 ### System Requirements
-* [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 ## Testing
-   * [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 Run tests on install by doing:
 ```pip3 install lib_bgp_data --force --install-option test```
@@ -98,7 +98,7 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
 
 
 ## Development/Contributing
-   * [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
@@ -108,11 +108,11 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
 6. Email me at jfuruness@gmail.com because idk how to even check those messages
 
 ## History
-   * [lib\_bgp\_data](#lib_bgp_data)
+   * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
    * 0.1.0 - Burns CDs with flask app, minimal features
 
 ## Credits
-   * [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 There where various sites I visited to learn about audio CD's, unfortunately I did not record them as I did them because I didn't plan on making a package. Here are two posts that helped:
 
@@ -123,13 +123,15 @@ And of course this would not have been possible without youtube_dl and wodim, tw
 
 Also, Corey Schafer on youtube had a tutorial on making a flask application that I used.
 
-## License
-   * [lib\_bgp\_data](#lib_bgp_data)
+And the flask tutorial for packages is also useful, code was used from there as well
 
-MIT License
+## License
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
+
+BSD License
 
 ## TODO/Possible Future Improvements
-   * [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
         * Youtube_dl is slow, use a custom downloader to be faster
         * multiprocess?
@@ -139,7 +141,7 @@ MIT License
             * Again, prob won't do this, because it'll just be me using it
 
 ## FAQ
-   * [lib\_bgp\_data](#lib_bgp_data)
+* [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 Q: Why does downloading the songs take a while??
 

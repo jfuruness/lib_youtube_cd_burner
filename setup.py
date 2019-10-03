@@ -1,14 +1,28 @@
-from setuptools import setup, find_packages
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""This module sets up the package for the lib_youtube_cd_burner"""
+
+from setuptools import find_packages, setup
+
+__author__ = "Justin Furuness"
+__credits__ = ["Justin Furuness"]
+__Lisence__ = "MIT"
+__maintainer__ = "Justin Furuness"
+__email__ = "jfuruness@gmail.com"
+__status__ = "Production"
 
 setup(
-    name='lib_youtube_cd_burner',
-    packages=find_packages(),
-    version='0.1.0',
-    author='Justin Furuness',
-    author_email='jfuruness@gmail.com',
-    url='https://github.com/jfuruness/lib_youtube_cd_burner.git',
+    name="lib_youtube_cd_burner",
+    version="0.1.0",
+    url="https://github.com/jfuruness/lib_youtube_cd_burner.git",
     download_url='https://github.com/jfuruness/lib_youtube_cd_burner.git',
     keywords=['Furuness', 'cd', 'burner', 'youtube', 'audio', 'audio cd'],
+    license="BSD",
+    description="Downloads youtube playlists and saves or formats them",
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
     install_requires=[
         'setuptools',
         'setuptools>=40.8.0'
@@ -31,6 +45,4 @@ setup(
         'console_scripts': [
             'youtube_cd_burner = lib_youtube_cd_burner.__main__:main'
         ]},
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
 )
