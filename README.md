@@ -174,6 +174,14 @@ BSD License
         * multiprocess?
         * Make better tests
         * Make it so that it checks if the path will run out of memory
+        * Try getting it to work on windows:
+            * https://en.wikipedia.org/wiki/Cdrtools
+            * https://tweaks.com/windows/48619/how-to-burn-cd-and-dvd-images-iso-files-from-the-command-line/
+            * Windows ctypes
+            * http://www.intelliadmin.com/index.php/2013/09/burn-a-dvd-or-cd-from-the-command-line/
+            * https://superuser.com/questions/584617/how-to-burn-a-cd-files-not-iso-from-the-command-line-in-windows-7
+            * https://pytale.wordpress.com/category/python-cddvd-burner/
+            * https://www.daniweb.com/programming/software-development/threads/72834/handling-cd-drives-from-python
         * add extra features to the docs such as remove silence, allow user to set burn speed, etc.
             * Again, prob won't do this, because it'll just be me using it
 
