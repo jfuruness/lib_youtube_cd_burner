@@ -66,6 +66,7 @@ Possible Future Improvements:
     -three seconds of silence should be customizable
 """
 
+import os
 import soundfile as sf
 from pydub import AudioSegment, silence
 from .utils import Logger, error_catcher
@@ -86,7 +87,7 @@ class Song:
     For an in depth explanation, see the top of the module"""
 
     __slots__ = ['path', 'name', 'logger', 'extension', 'audio_segment',
-                 'milliseconds', 'seconds', 'volume']
+                 'milliseconds', 'seconds', 'volume', "og_path"]
 
     @error_catcher()
     def __init__(self, path, name, logger):
@@ -120,13 +121,14 @@ class Song:
         explanation see the top of the module.
         """
 
-        self.logger.debug("Formatting {}".format(self.path))
+        self.logger.info("Formatting {}".format(self.path))
         # Formats the audio segment to WAV, 44100Hz, and bidrectional
-        self._format_audio_segment()
+        self._format_audio_segment(song_format=song_format)
 
-        # Changes the audio to pcm_16, neccessary for CD's
-        data, sample_rate = sf.read(self.path)
-        sf.write(self.path, data, sample_rate, subtype='PCM_16')
+        if song_format in ["wav", "WAV"]:
+            # Changes the audio to pcm_16, neccessary for CD's
+            data, sample_rate = sf.read(self.path)
+            sf.write(self.path, data, sample_rate, subtype='PCM_16')
 
         self._generate_meta_data(audio_segment=True)
         # Removes silence from the end of the playlist if called
@@ -138,6 +140,9 @@ class Song:
         self.audio_segment.export(self.path, format=self.extension)
         # Regenerates meta data and gets rid of the audio segment
         self._generate_meta_data()
+        if self.path != self.og_path:
+            os.remove(self.og_path)
+
 
     # https://stackoverflow.com/a/42496373
     @error_catcher()
@@ -161,6 +166,11 @@ class Song:
     def _format_audio_segment(self, song_format="wav"):
         """Changed to WAV, 44100Hz, bidirectional."""
 
+        # Need this here because ffmpeg changes the song format outside of
+        # my program, which will mess up the file extensions
+        self.extension = "wav"
+        self.path = "{}.{}".format(self.path.rsplit('.', 1)[0], "wav")
+        self.og_path = self.path
         # Done so that the audio segment gets generated
         self._generate_meta_data(audio_segment=True)
         # Gets the new path for a WAV formatted song for audio CD
