@@ -87,7 +87,7 @@ class Playlist:
                      remove_silence=False,
                      randomize=False,
                      save_path=None,  # If path is none CD gets burned
-                     song_format="wav")
+                     song_format="wav"):
         """Takes a playlist and generates cds from it.
 
         Takes a playlist and generates cds from it. remove_silence
