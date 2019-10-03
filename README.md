@@ -82,11 +82,13 @@ from lib_youtube_cd_burner import app
 app.run(debug=True)
 ```
 
+Then look on a web browser at localhost:5000
+
 #### From the Command Line
 
 run in a terminal: ```sudo youtube_cd_burner```
 
-This will start the flask application
+This will start the flask application on localhost:5000
 
 ### Installation instructions
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
