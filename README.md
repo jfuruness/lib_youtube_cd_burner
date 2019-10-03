@@ -15,6 +15,7 @@ This package contains the functionality to burn a CD with just a playlist (or vi
 * [FAQ](#faq)
 ## Package Description
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
+
 This package downloads a youtube playlist and burns a CD (or saves to a file) with the songs contained in that playlist. This is done through a series of steps.
 
 1. If the flask app is open, the url is passed into the flask app. It is not validated because you are only supposed to be running this on your own machine, so just don't do anything stupid.
