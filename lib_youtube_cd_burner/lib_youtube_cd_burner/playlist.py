@@ -149,11 +149,12 @@ class Playlist:
 
     @error_catcher()
     def clean_up(self):
-        """Deletes path"""
+        """Deletes paths"""
 
-        if os.path.exists(self.path):
-            # rm -rf path
-            rmtree(self.path)
+        for song in self.songs:
+            if os.path.exists(song.path):
+                # rm -rf path
+                os.remove(song.path)
 
 
 class Youtube_Playlist(Playlist):
