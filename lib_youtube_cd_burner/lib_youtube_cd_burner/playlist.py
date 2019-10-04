@@ -119,7 +119,8 @@ class Playlist:
         else:
             utils.normalize_audio(self)
             if not os.path.exists(save_path):
-                copytree(self.path, save_path)
+                os.makedirs(save_path)
+            copytree(self.path, save_path)
         self.clean_up()
 
     @error_catcher()
