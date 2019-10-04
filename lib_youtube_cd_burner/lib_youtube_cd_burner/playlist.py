@@ -35,7 +35,7 @@ Possible Future Improvements:
 import os
 from random import shuffle
 from youtube_dl import YoutubeDL
-from shutil import rmtree, copytree
+from shutil import rmtree, copytree, move
 from .song import Song
 from .cd import CD
 from .utils import Youtube_dl_fix, Logger, error_catcher, utils
@@ -120,7 +120,8 @@ class Playlist:
             utils.normalize_audio(self)
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
-            copytree(self.path, save_path)
+            for song in self.songs:
+                move(song.path, save_path)
         self.clean_up()
 
     @error_catcher()
