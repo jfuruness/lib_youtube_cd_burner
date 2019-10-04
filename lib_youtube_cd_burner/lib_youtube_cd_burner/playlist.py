@@ -120,6 +120,7 @@ class Playlist:
             utils.normalize_audio(self)
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
+            self.logger.info("moving songs now")
             for song in self.songs:
                 move(song.path, save_path)
         self.clean_up()

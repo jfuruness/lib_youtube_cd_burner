@@ -17,4 +17,5 @@ def normalize_audio(obj):
     # Average Volume
     avg_dbfs = sum([x.volume for x in obj.songs])/len(obj.songs)
     for song in obj.songs:
+        obj.logger.info("Normalizing audio for {}".format(song.name))
         song.match_target_amplitude(avg_dbfs)

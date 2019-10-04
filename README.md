@@ -149,6 +149,7 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
    * 0.1.1 - Burn CDs or save songs with custom format
    * 0.1.2 - Fixed bug where songs wouldn't save to existing paths
    * 0.1.3 - Doesn't delete final directory to run multiple queries at once potentially
+   * 0.1.4 - Fixed logging to show better info
 
 ## Credits
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
