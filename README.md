@@ -94,12 +94,14 @@ This will start the flask application on localhost:5000
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 First install wodim:
-```sudo apt-get install wodim
-sudo apt-get install ffmpeg```
+
+```sudo apt-get install wodim```
+
+```sudo apt-get install ffmpeg```
 
 
 Then install the package with:
-```pip3 install lib_youtube_cd_burner --force```
+```pip3 install lib_youtube_cd_burner --upgrade --force```
 
 To install from source and develop:
 ```
