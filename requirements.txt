@@ -1,0 +1,7 @@
+Flask_WTF==0.14.2
+youtube_dl==2019.1.17
+WTForms==2.2.1
+setuptools==40.8.0
+Flask==1.1.1
+pydub==0.23.1
+soundfile==0.10.2
