@@ -71,7 +71,7 @@ class Playlist:
 
     @error_catcher()
     def __init__(self,
-                 url,
+                 urls,
                  logger=Logger().logger,
                  path="/tmp/lib_cd_burner_songs"):
         """initializes playlist and directories"""
@@ -81,7 +81,10 @@ class Playlist:
             os.makedirs(self.path)
         self.songs = []
         self.cds = []
-        self.url = url
+        # URLs should be in the format of: "url1, url2, url3"
+        # This solves the problems of multiple playlists
+        # in a single folder not being normalized
+        self.urls = urls.replace(" ", "").split(",")
         self.logger = logger
 
     @error_catcher()
@@ -181,9 +184,10 @@ class Youtube_Playlist(Playlist):
             'progress_hooks': [self.my_hook]
         }
         try:
-            # Download songs
-            with Youtube_dl_fix(ydl_opts) as ydl:
-                ydl.download([self.url])
+            for url in self.urls:
+                # Download songs
+                with Youtube_dl_fix(ydl_opts) as ydl:
+                    ydl.download([url])
         except Exception as e:
             self.logger.warning("Video download failed. Probably webm file")
             self.logger.warning(e)

@@ -155,6 +155,7 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
    * 0.1.3 - Doesn't delete final directory to run multiple queries at once potentially
    * 0.1.4 - Fixed logging to show better info
    * 0.1.5 - Fixed install bug
+   * 0.1.5 - Added multi URL functionality for a single folder/cd to allow for normalized audio across multiple playlists
 
 ## Credits
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)

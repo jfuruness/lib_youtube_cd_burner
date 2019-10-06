@@ -23,7 +23,8 @@ class URLForm(FlaskForm):
     """URL Validator form for flask"""
     # Flasks URL validator sucks, so we don't use it
     # It says google.com is an invalid URL. wtf flask_wtf
-    url = StringField('URL', validators=[DataRequired()])
+    url = StringField('URL(s) (Comma separated if more than one)',
+                      validators=[DataRequired()])
     # Saved path
     save_path_str = ("For a CD to burn, this must be empty! "
                      "save path ex: /home/anon/Desktop/songs")

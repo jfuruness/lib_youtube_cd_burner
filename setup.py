@@ -14,7 +14,7 @@ __status__ = "Production"
 
 setup(
     name="lib_youtube_cd_burner",
-    version="0.1.5",
+    version="0.1.6",
     url="https://github.com/jfuruness/lib_youtube_cd_burner.git",
     download_url='https://github.com/jfuruness/lib_youtube_cd_burner.git',
     keywords=['Furuness', 'cd', 'burner', 'youtube', 'audio', 'audio cd'],
