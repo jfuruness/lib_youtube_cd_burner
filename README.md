@@ -156,6 +156,8 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
    * 0.1.4 - Fixed logging to show better info
    * 0.1.5 - Fixed install bug
    * 0.1.5 - Added multi URL functionality for a single folder/cd to allow for normalized audio across multiple playlists
+   * 0.1.6 - Simple bug fix - I don't remember what though
+   * 0.1.7 - Added basic metadata for title and album in case cars need that
 
 ## Credits
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
@@ -164,6 +166,9 @@ There where various sites I visited to learn about audio CD's, unfortunately I d
 
 https://stackoverflow.com/a/42496373
 https://superuser.com/a/1367091
+https://stackoverflow.com/a/3925147
+https://stackoverflow.com/a/34970600
+
 
 And of course this would not have been possible without youtube_dl and wodim, two very useful packages.
 

@@ -67,8 +67,10 @@ Possible Future Improvements:
 """
 
 import os
+from os.path import basename, normpath
 import soundfile as sf
 from pydub import AudioSegment, silence
+from mutagen.easyid3 import EasyID3
 from .utils import error_catcher
 
 __author__ = "Justin Furuness"
@@ -86,7 +88,7 @@ class Song:
     This class can format a song and change its decible level.
     For an in depth explanation, see the top of the module"""
 
-    __slots__ = ['path', 'name', 'logger', 'extension', 'audio_segment',
+    __slots__ = ['path', 'logger', 'extension', 'audio_segment',
                  'milliseconds', 'seconds', 'volume', "og_path"]
 
     @error_catcher()
@@ -95,8 +97,6 @@ class Song:
 
         # The path to the song file
         self.path = path
-        # The name of the song
-        self.name = name
         # The logger
         self.logger = logger
         # Put this here so as not to pass around strings
@@ -157,6 +157,15 @@ class Song:
         self.audio_segment.export(self.path, format=self.extension)
         self._generate_meta_data(self.path)
 
+    @error_catcher()
+    def add_metadata(self, save_path):
+        audio = EasyID3(self.path)
+        # https://stackoverflow.com/a/3925147
+        audio['title'] = basename(normpath(self.path))
+        # https://stackoverflow.com/a/34970600
+        audio['album'] = basename(normpath(save_path))
+        audio.save()
+
 ########################
 ### Helper Functions ###
 ########################
@@ -212,3 +221,7 @@ class Song:
             # Gets rid of the massive amount of ram this consumes
             self.audio_segment = None
         self.path = "{}.{}".format(self.path.rsplit('.', 1)[0], self.extension)
+
+    @property
+    def name(self):
+        return basename(normpath(self.path)).replace("." + self.extension, "")

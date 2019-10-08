@@ -125,7 +125,9 @@ class Playlist:
                 os.makedirs(save_path)
             self.logger.info("moving songs now")
             for song in self.songs:
-                move(song.path, save_path)
+                song.add_metadata(save_path)
+                move(song.path, os.path.join(save_path,
+                                             song.name + "." + song.extension))
         self.clean_up()
 
     @error_catcher()
