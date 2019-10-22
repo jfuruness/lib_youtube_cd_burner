@@ -158,11 +158,13 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
    * 0.1.5 - Added multi URL functionality for a single folder/cd to allow for normalized audio across multiple playlists
    * 0.1.6 - Simple bug fix - I don't remember what though
    * 0.1.7 - Added basic metadata for title and album in case cars need that
+   * 0.1.8 - Removed special characters from file names - appeared to cause an error where songs have no volume
+   * 0.1.9 - Removed excess files from package that were accidentally downloaded
 
 ## Credits
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
-There where various sites I visited to learn about audio CD's, unfortunately I did not record them as I did them because I didn't plan on making a package. Here are two posts that helped:
+There where various sites I visited to learn about audio CD's, unfortunately I did not record them as I did them because I didn't plan on making a package. Here are some posts that helped:
 
 https://stackoverflow.com/a/42496373
 https://superuser.com/a/1367091

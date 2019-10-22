@@ -67,6 +67,7 @@ Possible Future Improvements:
 """
 
 import os
+import re
 from os.path import basename, normpath
 import soundfile as sf
 from pydub import AudioSegment, silence
@@ -91,7 +92,7 @@ class Song:
     __slots__ = ['path', 'logger', 'extension', 'audio_segment',
                  'milliseconds', 'seconds', 'volume', "og_path"]
 
-    @error_catcher()
+#    @error_catcher()
     def __init__(self, path, name, logger):
         """Initializes path, name, and metadata"""
 
@@ -176,9 +177,20 @@ class Song:
 
         # Need this here because ffmpeg changes the song format outside of
         # my program, which will mess up the file extensions
+
+
+        # Should prob have this section as a documented func for reformatting
         self.extension = "wav"
         self.path = "{}.{}".format(self.path.rsplit('.', 1)[0], "wav")
         self.og_path = self.path
+        reformatted_path = [re.sub('[^a-zA-Z0-9_/]+', ' ', x)
+                            for x in self.path.split(".")[:-1]]
+
+        new_path = ''.join(reformatted_path) + "." + self.path.split(".")[-1]
+        os.rename(self.path, new_path)
+        self.og_path = new_path
+        self.path = new_path
+
         # Done so that the audio segment gets generated
         self._generate_meta_data(audio_segment=True)
         # Gets the new path for a WAV formatted song for audio CD

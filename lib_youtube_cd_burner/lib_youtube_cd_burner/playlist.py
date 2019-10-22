@@ -176,7 +176,7 @@ class Youtube_Playlist(Playlist):
             'age_limit': 25,
             'retries': 3,
             'format': 'bestaudio[asr=44100]/best',
-            'outtmpl': self.path + '/%(playlist_index)s- %(title)s.%(ext)s',
+            'outtmpl': '_%(playlist_index)s- %(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'wav',
@@ -186,8 +186,10 @@ class Youtube_Playlist(Playlist):
             'progress_hooks': [self.my_hook]
         }
         try:
-            for url in self.urls:
+            og = ydl_opts['outtmpl']
+            for i, url in enumerate(self.urls):
                 # Download songs
+                ydl_opts['outtmpl'] = self.path + "/" + str(i) + og
                 with Youtube_dl_fix(ydl_opts) as ydl:
                     ydl.download([url])
         except Exception as e:
