@@ -160,6 +160,7 @@ Note: I currently have not written any tests, since I have tried the CD's and kn
    * 0.1.7 - Added basic metadata for title and album in case cars need that
    * 0.1.8 - Removed special characters from file names - appeared to cause an error where songs have no volume
    * 0.1.9 - Removed excess files from package that were accidentally downloaded
+   * 0.2.0 - Removed songs that had infinitely negative volume and normalized volume before adding silence
 
 ## Credits
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)

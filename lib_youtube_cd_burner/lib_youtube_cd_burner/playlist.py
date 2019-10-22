@@ -203,4 +203,12 @@ class Youtube_Playlist(Playlist):
         name = d['filename'].rsplit('.', 1)[0]
         if d['status'] == 'finished':
             self.logger.info('Done downloading {}'.format(name))
-            self.songs.append(Song(d['filename'], name, self.logger))
+            song = Song(d['filename'], name, self.logger)
+            # Makes sure that the song downloaded and has volume
+            if os.path.exists(song.path) and song.volume > -float('Inf'):
+                self.songs.append(song)
+            # If it didn't download don't include it
+            else:
+                if os.path.exists(song.path):
+                    os.remove(song.path)
+                self.logger.info("Not adding song, didn't download properly")

@@ -136,13 +136,21 @@ class Song:
         # Default is fale because it takes a long time
         if remove_silence:
             self.remove_silence()
-        # Adds three seconds to the end of the audio segment
-        self.audio_segment += AudioSegment.silent(duration=3000)
-        self.audio_segment.export(self.path, format=self.extension)
+        # We do NOT add silence here because later audio is normalized
+        # It will change the silence, and also mess up the avg volume
         # Regenerates meta data and gets rid of the audio segment
         self._generate_meta_data()
         if self.path != self.og_path:
             os.remove(self.og_path)
+
+    def add_silence(self):
+        """Adds 3 seconds of silence"""
+
+        self._generate_meta_data(audio_segment=True)
+        # Adds three seconds to the end of the audio segment
+        self.audio_segment += AudioSegment.silent(duration=3000)
+        self.audio_segment.export(self.path, format=self.extension)
+        self._generate_meta_data()
 
     # https://stackoverflow.com/a/42496373
     @error_catcher()
@@ -154,6 +162,8 @@ class Song:
 
         self._generate_meta_data(self.path, audio_segment=True)
         change_in_dBFS = target_dBFS - self.audio_segment.dBFS
+        print(self.audio_segment.dBFS)
+        print(change_in_dBFS)
         self.audio_segment = self.audio_segment.apply_gain(change_in_dBFS)
         self.audio_segment.export(self.path, format=self.extension)
         self._generate_meta_data(self.path)
