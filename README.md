@@ -33,6 +33,10 @@ This package downloads a youtube playlist and burns a CD (or saves to a file) wi
 NOTE: For this to run, wodim requires you to be a sudo user. All of these must be done with sudo. 
 
 #### In a Script
+
+Easiest way to run will be to do it from the command line and use the flask application, shown below
+
+
 Initializing the Main module:
 
 
