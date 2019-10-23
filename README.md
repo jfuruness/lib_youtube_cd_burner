@@ -126,6 +126,8 @@ Linux. It needs wodim, I don't know how to burn a CD on windows and I have asked
 ## Testing
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
+NOTE: TESTS STILL IN DEVELOPMENT
+
 Run tests on install by doing:
 ```pip3 install lib_youtube_cd_burner --force --install-option test```
 This will install the package, force the command line arguments to be installed, and run the tests
