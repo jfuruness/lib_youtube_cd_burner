@@ -90,7 +90,7 @@ run in a terminal: ```sudo youtube_cd_burner```
 
 This will start the flask application on localhost:5000
 
-### Installation instructions
+### Installation
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 First install wodim:
@@ -124,7 +124,7 @@ Linux. It needs wodim, I don't know how to burn a CD on windows and I have asked
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
 Run tests on install by doing:
-```pip3 install lib_bgp_data --force --install-option test```
+```pip3 install lib_youtube_cd_burner --force --install-option test```
 This will install the package, force the command line arguments to be installed, and run the tests
 NOTE: You might need sudo to install command line arguments when doing this
 
@@ -134,7 +134,7 @@ You can test the package if in development by moving/cd into the directory where
 To test a specific submodule, cd into that submodule and run:
 ```pytest```
 
-Note: I currently have not written any tests, since I have tried the CD's and know that it works. Idk if it's worth it to write since this package is complete so I'll put it off for now
+Note: I currently have not written any tests, since I have tried the CD's and know that it works. Idk if it's worth it to write since this package is complete so I'll put it off for now. I have also stress tested it with several possible youtube playlists and found some hilarious bugs, omg is audio formatting so nitpicky.
 
 
 ## Development/Contributing
