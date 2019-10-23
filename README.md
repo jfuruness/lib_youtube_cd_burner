@@ -3,8 +3,7 @@ This package contains the functionality to burn a CD with just a playlist (or vi
 
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 * [Description](#package-description)
-* [Usage](#forecast-usage)
-* [Possible Future Improvements](#forecast-possible-future-improvements)
+* [Usage](#usage)
 * [Installation](#installation)
 * [Testing](#testing)
 * [Development/Contributing](#developmentcontributing)
