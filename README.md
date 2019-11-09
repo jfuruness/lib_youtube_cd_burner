@@ -1,3 +1,4 @@
+
 # lib\_youtube\_cd\_burner
 This package contains the functionality to burn a CD with just a playlist (or video) URL. It also contains a flask website for ease of use. 
 
@@ -192,7 +193,6 @@ BSD License
 ## TODO/Possible Future Improvements
 * [lib\_youtube\_cd\_burner](#lib\_youtube\_cd\_burner)
 
-        * Youtube_dl is slow, use a custom downloader to be faster
         * multiprocess?
         * Make better tests
         * Make it so that it checks if the path will run out of memory
@@ -221,3 +221,51 @@ A: Because the CD does not burn well if it burns fast and this is designed for p
 Q: Why does the flask app have to be in the top directory?
 
 A: Because the flask naming scheme sucks, and it literally does not work in any way anywhere else no matter what I do. Or at least I should say, it cannot be dynamically installed and run anywhere if you do that.
+
+Q: How to set up com for a non tech savvy family
+
+A: Make this computer just be for this and nothing else and make it idiot proof without security in mind:
+To set up com for Christina’s fam:
+
+  
+
+[https://askubuntu.com/questions/281074/can-i-set-my-user-account-to-have-no-password](https://askubuntu.com/questions/281074/can-i-set-my-user-account-to-have-no-password)
+
+install my package after doing sudo su
+
+create systemd file:
+```
+[Unit]
+After=network.target
+[Service]
+ExecStart=/bin/bash /home/anon/cd_burner.sh
+[Install]
+WantedBy=default.target
+```
+cd_burner.sh:
+```sudo youtube_cd_burner```
+
+sudo chmod 644 both those files
+```
+sudo systemctl daemon-reload
+sudo systemctl start cd_burner.service
+sudo systemctl status cd_burner.service
+(check if it burns a cd)
+sudo systemctl stop cd_burner.service
+```
+  [https://www.scaleway.com/en/docs/how-to-configure-nginx-reverse-proxy/](https://www.scaleway.com/en/docs/how-to-configure-nginx-reverse-proxy/)
+-change port to be 5k
+```
+sudo systemctl enable nginx
+sudo systemctl enable cd_burner.service
+```
+* change firefox homepage to be localhost
+* start firefox on boot
+* plug in
+* add to their wifi
+* make it never turn off
+* also add instructions –
+
+boot and wait (if closed, open firefox). Burn one CD at a time. The longer the playlist the longer it will take. Never do more than one playlist at a time. The disc will pop out when you need to burn a disc. Insert disc and close. Then it will pop out when it’s done. To use – simply put the youtube playlist link in the URL.
+
+Also, I know this isn't detailed but it's really just for me so whatevs
