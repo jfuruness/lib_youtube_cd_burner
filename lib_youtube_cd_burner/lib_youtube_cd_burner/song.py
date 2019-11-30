@@ -71,6 +71,7 @@ import re
 from os.path import basename, normpath
 import soundfile as sf
 from pydub import AudioSegment, silence
+from subprocess import check_call, DEVNULL
 from mutagen.easyid3 import EasyID3
 from .utils import error_catcher
 
@@ -188,19 +189,26 @@ class Song:
         # Need this here because ffmpeg changes the song format outside of
         # my program, which will mess up the file extensions
 
-
         # Should prob have this section as a documented func for reformatting
         self.extension = "wav"
         self.path = "{}.{}".format(self.path.rsplit('.', 1)[0], "wav")
+        # Must have this, pydub breaks on surround sound 5.1
+        # this converts all songs to sterio
+        converted = "{}.{}".format(self.path.rsplit('.', 1)[0], "converted.wav")
+        convert_str = 'sudo ffmpeg -i "'
+        convert_str += self.path
+        convert_str += '" -ac 2 "'
+        convert_str += converted + '"'
+        check_call(convert_str, shell=True, stdout=DEVNULL, stderr=DEVNULL)
+        self.path = converted
         self.og_path = self.path
-        reformatted_path = [re.sub('[^a-zA-Z0-9_/]+', ' ', x)
-                            for x in self.path.split(".")[:-1]]
+        reformatted_path = [re.sub('[^А-яa-zA-Z0-9_/]+', ' ', x)
+                            for x in self.path.split(".")[:-2]]
 
         new_path = ''.join(reformatted_path) + "." + self.path.split(".")[-1]
         os.rename(self.path, new_path)
         self.og_path = new_path
         self.path = new_path
-
         # Done so that the audio segment gets generated
         self._generate_meta_data(audio_segment=True)
         # Gets the new path for a WAV formatted song for audio CD
