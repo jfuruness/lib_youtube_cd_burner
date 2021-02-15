@@ -1,16 +1,20 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+from argparse import ArgumentParser
+import logging
 
-"""This module creates the flask app to obtain urls"""
+from lib_utils.print_funcs import config_logging
 
-from .__init__ import create_app
+from .youtube_playlist import YoutubePlaylist
 
 
-__author__ = "Justin Furuness"
-__credits__ = ["Justin Furuness"]
-__Lisence__ = "MIT"
-__maintainer__ = "Justin Furuness"
-__email__ = "jfuruness@gmail.com"
-__status__ = "Production"
-
-create_app().run(debug=True)
+def main():
+    parser = ArgumentParser(description='CD Burner')
+    url = "https://www.youtube.com/watch?v=jLtbFWJm9_M"
+    parser.add_argument('--urls', action="store", default=url)
+    parser.add_argument('--dl_path', action="store", default="/tmp/yt")
+    parser.add_argument('--save_path', action="store", default="/tmp/yt2")
+    parser.add_argument('--song_format', action="store", default="mp3")
+    args = parser.parse_args()
+    config_logging(logging.DEBUG)
+    YoutubePlaylist(args.urls.split(","),
+                    args.dl_path).generate_audio_medium(save_path=args.save_path,
+                                                        song_format=args.song_format)

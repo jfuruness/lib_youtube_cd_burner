@@ -24,16 +24,12 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'setuptools',
-        'setuptools',
-        'youtube_dl',
-        'Flask',
+        'lib_utils',
         'mutagen',
-        'numpy',
-        'WTForms',
-        'Flask_WTF',
+        'numpy',  # soundfile needs this isntalleed
         'pydub',
-        'soundfile'
+        'soundfile',
+        'youtube_dl',
     ],
     classifiers=[
         'Environment :: Console',
@@ -44,6 +40,7 @@ setup(
         'Programming Language :: Python :: 3'],
     entry_points={
         'console_scripts': [
-            'youtube_cd_burner = lib_youtube_cd_burner.__main__:main'
+            'lib_youtube_cd_burner = lib_youtube_cd_burner.__main__:main',
+            'cd_burner = lib_youtube_cd_burner.__main__:main',
         ]},
 )

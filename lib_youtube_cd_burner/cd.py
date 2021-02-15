@@ -1,61 +1,25 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""This module contains class CD
-
-The CD class can add songs, normalize the audio, and burn itself.
-
-When adding songs, the cd burner makes sure it doesn't go over
-it's capacity. If it does it returns false.
-
-Normalizing the audio is used to make sure one song isn't louder
-than the rest on the track.
-
-Design Choices:
--Normalized audio is used to ensure songs are similar volume
--Burn speed set as low as possible to make sure for a smooth burn for
- use in things such as car players etc
-Possible Future Improvements:
--Allow user to set burn speed
-"""
-
 import subprocess
 import time
 import fcntl
 import os
-from enum import Enum
 from contextlib import contextmanager
-from .utils import error_catcher
 
-__author__ = "Justin Furuness"
-__credits__ = ["Justin Furuness"]
-__Lisence__ = "MIT"
-__Version__ = "0.1.0"
-__maintainer__ = "Justin Furuness"
-__email__ = "jfuruness@gmail.com"
-__status__ = "Production"
+from .disk_values_enum import DiskValues
+from .song_holder import SongHolder
 
+class CDFullError(Exception):
+    pass
 
-class Disk_Values(Enum):
-    NO_DISK = 1
-    OPEN = 2
-    READING = 3
-    DISK_IN_TRAY = 4
-
-
-class CD:
+class CD(SongHolder):
     """CD class that adds songs and burns cds"""
 
-    @error_catcher()
-    def __init__(self, max_seconds, logger):
+    def __init__(self, max_seconds):
         """initializes cd and max seconds a cd can hold"""
 
-        self.logger = logger
         self.max_seconds = max_seconds
         self.total_seconds = 0
-        self.songs = []
+        super(CD, self).__init__()
 
-    @error_catcher()
     def add_track(self, song):
         """Adds a song to a cd, returns false if over limit"""
 
@@ -65,10 +29,9 @@ class CD:
             self.songs.append(song)
             # Increase total seconds
             self.total_seconds += song.seconds
-            return True
         # Song too long return false, cd full
         else:
-            return False
+            raise CDFullError
 
     def burn(self, times_to_burn=1):
         """Burns a cd times_to_burn times"""
@@ -77,7 +40,7 @@ class CD:
             # Wait for disk insertion
             if self._get_disk():
                 # args for bash command
-                args = ["sudo",
+                args = [#"sudo",
                         "wodim",
                         "-v",
                         "dev=/dev/sr0",
@@ -90,31 +53,31 @@ class CD:
                 args.extend([x.path for x in self.songs])
                 # Actually burns the cd
                 output = subprocess.run(args)
-                self.logger.debug(output)
-                self.logger.info("Just burned {}".format(self))
+                logging.debug(output)
+                logging.info("Just burned {}".format(self))
                 # Pops the new cd out
-                subprocess.run(["eject"])
+                CD.eject()
             else:
-                self.logger.warning("Disk not inserted, exiting")
+                logging.warning("Disk not inserted, exiting")
 
     def _get_disk(self):
         """Waits for disk insertion"""
 
         # Pops out cd
-        subprocess.run(["eject"])
-        self.logger.info("Insert cd!")
+        CD.eject()
+        logging.info("Insert cd!")
 
         while self._get_disk_val() == Disk_Values.OPEN.value:
-            self.logger.debug("Disk tray open")
+            logging.info("Disk tray open\r")
             time.sleep(1)
         while self._get_disk_val() == Disk_Values.READING.value:
-            self.logger.debug("Reading in disk")
+            logging.info("Reading in disk\r")
             time.sleep(1)
         if self._get_disk_val() == Disk_Values.NO_DISK.value:
-            self.logger.warning("No disk inserted")
+            logging.warning("No disk inserted")
             return False
         elif self._get_disk_val() == Disk_Values.DISK_IN_TRAY.value:
-            self.logger.debug("Disk in tray and read")
+            logging.info("Disk in tray and read")
             return True
 
     def _get_disk_val(self):
@@ -129,6 +92,11 @@ class CD:
         fd = os.open('/dev/sr0', os.O_RDONLY | os.O_NONBLOCK)
         yield fd
         os.close(fd)
+
+    @staticmethod
+    def eject(self):
+        """Pops out CD"""
+        subprocess.run(["eject"])
 
     def __str__(self):
         """For when cd's are printed"""
