@@ -29,6 +29,7 @@ setup(
         'numpy',  # soundfile needs this isntalleed
         'pydub',
         'soundfile',
+
         'youtube_dl',
     ],
     classifiers=[
