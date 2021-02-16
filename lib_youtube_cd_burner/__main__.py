@@ -22,4 +22,4 @@ def main():
                         args.dl_path).generate_audio_medium(save_path=args.save_path,
                                                             song_format=args.song_format)
     else:
-        App.create_app()
+        App().create_app()
