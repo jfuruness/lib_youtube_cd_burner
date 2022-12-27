@@ -3,7 +3,7 @@ youtube_dl
 Flask==1.1.1
 WTForms==2.2.1
 Flask_WTF==0.14.2
-setuptools==40.8.0
+setuptools==65.5.1
 mutagen==1.42.0
 numpy
 pydub==0.23.1
