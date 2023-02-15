@@ -1,4 +1,4 @@
-werkzeug==0.16.1
+werkzeug==2.2.3
 youtube_dl
 Flask==1.1.1
 WTForms==2.2.1
